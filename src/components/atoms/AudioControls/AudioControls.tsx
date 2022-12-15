@@ -7,24 +7,24 @@ import "../../../styles/atoms/_audioControls.scss";
 
 const AudioControls: React.FC<IAudioControlsProps> = ({
   isPlaying,
-  onPlayPauseClick,
-  onPrevClick,
-  onNextClick,
+  onClick: onPlayPauseClick,
+  onPreviousTrackClick: onPrevClick,
+  onNextTrackClick: onNextClick,
 }) => {
   return (
     <div className="audio-controls">
       <button
         type="button"
-        className="prev"
+        className="audio-controls__prev"
         aria-label="Previous"
         onClick={onPrevClick}
       >
-       <ArrowLeft />
+        <ArrowLeft />
       </button>
       {isPlaying ? (
         <button
           type="button"
-          className="pause"
+          className="audio-controls__pause"
           onClick={() => onPlayPauseClick(false)}
           aria-label="Pause"
         >
@@ -33,7 +33,7 @@ const AudioControls: React.FC<IAudioControlsProps> = ({
       ) : (
         <button
           type="button"
-          className="play"
+          className="audio-controls__play"
           onClick={() => onPlayPauseClick(true)}
           aria-label="Play"
         >
@@ -42,7 +42,7 @@ const AudioControls: React.FC<IAudioControlsProps> = ({
       )}
       <button
         type="button"
-        className="next"
+        className="audio-controls__next"
         aria-label="Next"
         onClick={onNextClick}
       >

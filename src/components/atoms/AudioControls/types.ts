@@ -1,6 +1,6 @@
 export interface IAudioControlsProps {
   isPlaying: boolean;
-  onPlayPauseClick: (val: boolean) => void;
-  onPrevClick: () => void;
-  onNextClick: () => void;
+  onClick: (val: boolean) => void;
+  onPreviousTrackClick: () => void;
+  onNextTrackClick: () => void;
 }

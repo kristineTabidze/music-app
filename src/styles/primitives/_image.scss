@@ -2,4 +2,7 @@
     display: block;
     max-width: 100%;
     height: auto;
+    &--round {
+        border-radius: 70px;
+    }
 }

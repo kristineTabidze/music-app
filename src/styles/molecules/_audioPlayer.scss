@@ -1,43 +1,32 @@
 .audio-player {
-  max-width: 350px;
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 28px 28px rgba(0, 0, 0, 0.2);
-  margin: auto;
-  color: var(--white);
-}
-
-.artwork {
-  border-radius: 120px;
-  display: block;
-  margin: auto;
-  height: 200px;
-  width: 200px;
-}
-
-.track-info {
-  text-align: center;
-  z-index: 1;
-  position: relative;
-}
-
-.title {
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-
-.artist {
-  font-weight: 300;
-  margin-top: 0;
-}
-
-input[type="range"] {
-  height: 5px;
-  -webkit-appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 100px;
   width: 100%;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  background: #3b7677;
-  transition: #3b7677 0.2s ease;
-  cursor: pointer;
+  &__artist,
+  &__name {
+    margin: 50px 0 25px 0;
+  }
+  &__cover {
+    width: 400px;
+    height: 400px;
+  }
+  &__progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 25px 0 50px 0;
+  }
+  &__progress-slider {
+    height: 7px;
+    -webkit-appearance: none;
+    width: 100%;
+    border-radius: 5px;
+    margin: 0 20px;
+    border: 1px solid #dadada;
+    cursor: pointer;
+  }
 }

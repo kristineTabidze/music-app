@@ -1,10 +1,16 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { changeCurrentMusic, selectCurrentMusic } from "../../../store/currentMusic/currentMusic";
+import {
+  changeCurrentMusic,
+  selectCurrentMusic,
+} from "../../../store/currentMusic/currentMusic";
 import { useAppSelector, useAppDispatch } from "../../../store/hooks";
 import "../../../styles/molecules/_audioPlayer.scss";
 import AudioControls from "../../atoms/AudioControls";
 import Library from "../../molecules/Library";
 import { IMUSIC } from "../../utils/data/data";
+import { formatTime } from "./utils";
+import Image from "../../primitives/Image";
+import Typography from "../../primitives/Typography";
 
 const AudioPlayer: React.FC<{ tracks: IMUSIC[] }> = ({ tracks }) => {
   const { currentMusicIndex } = useAppSelector(selectCurrentMusic);
@@ -17,10 +23,7 @@ const AudioPlayer: React.FC<{ tracks: IMUSIC[] }> = ({ tracks }) => {
   const intervalRef = useRef(setInterval(() => {}, 1000));
   const isReady = useRef(false);
 
-  // Destructure for conciseness
-  const { duration } = audioRef.current;
-
-  const toPrevTrack = useCallback(() => {
+  const onPreviousTrackClick = useCallback(() => {
     let index = currentMusicIndex - 1;
     if (currentMusicIndex - 1 < 0) {
       index = tracks.length - 1;
@@ -28,7 +31,7 @@ const AudioPlayer: React.FC<{ tracks: IMUSIC[] }> = ({ tracks }) => {
     dispatch(changeCurrentMusic({ currentMusicIndex: index }));
   }, [currentMusicIndex, tracks.length, dispatch]);
 
-  const toNextTrack = useCallback(() => {
+  const onNextTrackClick = useCallback(() => {
     let index = 0;
     if (currentMusicIndex < tracks.length - 1) {
       index = currentMusicIndex + 1;
@@ -37,19 +40,18 @@ const AudioPlayer: React.FC<{ tracks: IMUSIC[] }> = ({ tracks }) => {
   }, [currentMusicIndex, tracks.length, dispatch]);
 
   const startTimer = useCallback(() => {
-    // Clear any timers already running
     clearInterval(intervalRef.current);
     if (!intervalRef.current) {
       return;
     }
     intervalRef.current = setInterval(() => {
       if (audioRef.current.ended) {
-        toNextTrack();
+        onNextTrackClick();
       } else {
         setTrackProgress(audioRef.current.currentTime);
       }
     }, 1000);
-  }, [toNextTrack]);
+  }, [onNextTrackClick]);
 
   useEffect(() => {
     if (isPlaying) {
@@ -66,7 +68,6 @@ const AudioPlayer: React.FC<{ tracks: IMUSIC[] }> = ({ tracks }) => {
     };
   }, [isPlaying, startTimer]);
 
-  // Handle setup when changing tracks
   useEffect(() => {
     audioRef.current.pause();
 
@@ -78,63 +79,60 @@ const AudioPlayer: React.FC<{ tracks: IMUSIC[] }> = ({ tracks }) => {
       setIsPlaying(true);
       startTimer();
     } else {
-      // Set the isReady ref as true for the next pass
       isReady.current = true;
     }
   }, [currentMusicIndex, audio, startTimer]);
 
-  const onScrub = (value: string) => {
-    // Clear any timers already running
+  const onAudioRangeChange = (value: string) => {
     clearInterval(intervalRef.current);
     audioRef.current.currentTime = +value;
     setTrackProgress(audioRef.current.currentTime);
   };
 
-  const onScrubEnd = () => {
-    // If not already playing, start
+  const onKeyUp = useCallback(() => {
     if (!isPlaying) {
       setIsPlaying(true);
     }
     startTimer();
-  };
+  }, [isPlaying, startTimer]);
 
+  const { duration } = audioRef.current;
   const currentPercentage = duration
     ? `${(trackProgress / duration) * 100}%`
     : "0%";
   const trackStyling = `
-  -webkit-gradient(linear, 0% 0%, 100% 0%, color-stop(${currentPercentage}, #fff), color-stop(${currentPercentage}, #777))
+  -webkit-gradient(linear, 0% 0%, 100% 0%, color-stop(${currentPercentage}, ${color[0]}), color-stop(${currentPercentage}, #e7e7e7))
 `;
 
   return (
-    <div style={{ display: "flex" }}>
-      <Library musicList={tracks} />
-      <div className="audio-player">
-        <div className="track-info">
-          <img className="artwork" src={cover} alt={`${name}/${artist}`} />
-          <h2 className="name">{name}</h2>
-          <h3 className="artist">{artist}</h3>
-          <AudioControls
-            isPlaying={isPlaying}
-            onPrevClick={toPrevTrack}
-            onNextClick={toNextTrack}
-            onPlayPauseClick={setIsPlaying}
-          />
-          {trackProgress}
-          <input
-            type="range"
-            value={trackProgress}
-            step="1"
-            min="0"
-            max={duration ? duration : `${duration}`}
-            className="progress"
-            onChange={(e) => onScrub(e.target.value)}
-            onMouseUp={onScrubEnd}
-            onKeyUp={onScrubEnd}
-            style={{ background: trackStyling }}
-          />
-          {duration}
-        </div>
+    <div className="audio-player">
+      <Image src={cover} alt={name} isRound className="audio-player__cover" />
+      <Typography className="audio-player__artist" variant="h2">
+        {artist}
+      </Typography>
+      <Typography className="audio-player__name">{name}</Typography>
+      <div className="audio-player__progress">
+        {formatTime(trackProgress)}
+        <input
+          type="range"
+          value={trackProgress}
+          step="1"
+          min="0"
+          max={duration || 0}
+          className="audio-player__progress-slider"
+          onChange={(e) => onAudioRangeChange(e.target.value)}
+          onMouseUp={onKeyUp}
+          onKeyUp={onKeyUp}
+          style={{ background: trackStyling }}
+        />
+        {formatTime(duration || 0)}
       </div>
+      <AudioControls
+        isPlaying={isPlaying}
+        onPreviousTrackClick={onPreviousTrackClick}
+        onNextTrackClick={onNextTrackClick}
+        onClick={setIsPlaying}
+      />
     </div>
   );
 };
