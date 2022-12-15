@@ -1,0 +1,37 @@
+audio::-webkit-media-controls-panel {
+  background-color: #56aeff;
+}
+
+audio::-webkit-media-controls-volume-slider {
+  background-color: red;
+  border-radius: 25px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+audio::-webkit-media-controls-timeline {
+  background-color: green;
+  border-radius: 25px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+audio::-webkit-media-controls-time-remaining-display {
+  color: blue;
+}
+
+audio::-webkit-media-controls-current-time-display {
+  color: yellow;
+}
+
+audio::-webkit-media-controls-play-button {
+  background-color: #371399;
+  border-radius: 50%;
+}
+
+audio::-webkit-media-controls-mute-button {
+  background-color: hsl(287, 84%, 46%);
+  border-radius: 50%;
+}
+
+////////////////@at-root

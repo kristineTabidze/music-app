@@ -1,0 +1,23 @@
+.music-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: 0.2s;
+  &--active {
+    background: #95baeb;
+  }
+
+  &:hover {
+    background: #95baeb;
+  }
+  &:last-child {
+    border-bottom: none;
+  }
+  &__image {
+    width: 4rem;
+    height: 4rem;
+    margin-right: 1rem;
+  }
+}
